@@ -2,10 +2,7 @@ package moomoo.library.file;
 
 import lombok.extern.slf4j.Slf4j;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -21,6 +18,11 @@ public class FileIO {
     }
 
     public static ArrayList<String> readFile(String filePath){
+        File file = new File(filePath);
+        if(!file.exists() || !file.isFile()) {
+            log.warn("{} do not exist. ", filePath);
+            return null;
+        }
         try(FileInputStream fileInputStream = new FileInputStream(filePath)) {
             StringBuilder stringBuilder = new StringBuilder(new String(fileInputStream.readAllBytes(), StandardCharsets.UTF_8));
             return new ArrayList<>(List.of(stringBuilder.toString().split("\n")));
@@ -31,7 +33,7 @@ public class FileIO {
     }
 
     public static void writeFile(String filePath, String context) {
-        try (FileOutputStream fileOutputStream = new FileOutputStream(filePath)) {
+        try (FileOutputStream fileOutputStream = new FileOutputStream(filePath, true)) {
             StringBuilder data = new StringBuilder();
 
             data.append(context);

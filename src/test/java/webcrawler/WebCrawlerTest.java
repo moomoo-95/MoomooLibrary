@@ -82,7 +82,6 @@ public class WebCrawlerTest {
     }
 
     public void plainToParseData(PlainData plainData) {
-
         String[] plainDates = plainData.getDate().split(" ");
         int year = Integer.parseInt(plainDates[0].replaceAll(NOT_NUMBER,""));
         int month = Integer.parseInt(plainDates[1].replaceAll(NOT_NUMBER,""));
