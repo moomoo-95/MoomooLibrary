@@ -1,8 +1,11 @@
 package webcrawler.base;
 
 import java.time.LocalDate;
+import java.util.Arrays;
 
 public class ValidData {
+    public static final String SEPARATOR = "\t";
+
     private final int round;
     private final LocalDate date;
     private final int[] numbers;
@@ -35,5 +38,10 @@ public class ValidData {
 
     public Winner[] getWinnerList() {
         return winnerList;
+    }
+
+    @Override
+    public String toString() {
+        return round + SEPARATOR + date.toString() + SEPARATOR + Arrays.toString(numbers) + SEPARATOR + bonusNumber + SEPARATOR + Arrays.toString(winnerList) + "\n";
     }
 }

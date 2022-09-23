@@ -1,6 +1,7 @@
 package webcrawler;
 
 import lombok.extern.slf4j.Slf4j;
+import moomoo.library.file.FileIO;
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -28,7 +29,7 @@ public class WebCrawlerTest {
     public void webCrawlerTest() {
         WebDriver driver;
         ArrayList<PlainData> elements = new ArrayList<>();
-        int count = 200;
+        int count = 0;
         String url1 = "https://dhlottery.co.kr/gameResult.do?method=byWin&drwNo=";
         String url2 = "&dwrNoList=";
 
@@ -49,7 +50,7 @@ public class WebCrawlerTest {
         driver = new ChromeDriver(options);
 
         try {
-            while (count < 200 + 3) {
+            while (count < 20) {
                 count++;
                 String query = url1 + count + url2 + count;
                 driver.get(query);
@@ -70,15 +71,24 @@ public class WebCrawlerTest {
         }
 
         elements.forEach( element -> plainToParseData(element));
+//
+//        dataList.forEach( validData -> {
+//            log.debug("=============================================");
+//            log.debug("rnd : {}", validData.getRound());
+//            log.debug("dat : {}", validData.getDate());
+//            log.debug("num : {}", validData.getNumbers());
+//            log.debug("bnm : {}", validData.getBonusNumber());
+//            log.debug("wnr : {}", validData.getWinnerList());
+//        });
 
-        dataList.forEach( validData -> {
-            log.debug("=============================================");
-            log.debug("rnd : {}", validData.getRound());
-            log.debug("dat : {}", validData.getDate());
-            log.debug("num : {}", validData.getNumbers());
-            log.debug("bnm : {}", validData.getBonusNumber());
-            log.debug("wnr : {}", validData.getWinnerList());
-        });
+        String fileName = "./src/main/resources/parsingdata/validData.txt";
+        StringBuilder stringBuilder = new StringBuilder();
+        dataList.forEach(validData -> stringBuilder.append(
+                validData.toString()
+        ));
+
+
+        FileIO.writeFile(fileName, stringBuilder.toString());
     }
 
     public void plainToParseData(PlainData plainData) {

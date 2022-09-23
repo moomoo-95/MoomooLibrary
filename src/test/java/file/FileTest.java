@@ -13,7 +13,7 @@ public class FileTest {
 
     @Test
     public void FfmpegMergeTest() {
-        String path = "src/main/resources/parsingdata/test.txt";
+        String path = "./src/main/resources/parsingdata/test.txt";
         FileIO.writeFile(path, "안녕하세요gg\n");
         ArrayList<String> fileContext = FileIO.readFile(path);
 
