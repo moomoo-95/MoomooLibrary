@@ -13,7 +13,6 @@ import webcrawler.base.Winner;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 @Slf4j
 public class WebCrawlerTest {
@@ -21,6 +20,9 @@ public class WebCrawlerTest {
     private static final String WEB_DRIVER_PATH = "./src/main/resources/driver/chromedriver";
 
     private static final String NOT_NUMBER = "[^0-9]";
+
+    public static final String SEPARATOR_VALID_DATA = "\t";
+    public static final String SEPARATOR_WINNER = "/";
 
     private ArrayList<ValidData> dataList = new ArrayList<>();
 
@@ -50,7 +52,7 @@ public class WebCrawlerTest {
         driver = new ChromeDriver(options);
 
         try {
-            while (count < 20) {
+            while (count < 10) {
                 count++;
                 String query = url1 + count + url2 + count;
                 driver.get(query);
@@ -70,7 +72,7 @@ public class WebCrawlerTest {
             driver.close();
         }
 
-        elements.forEach( element -> plainToParseData(element));
+        elements.forEach( element -> plainToValidData(element));
 //
 //        dataList.forEach( validData -> {
 //            log.debug("=============================================");
@@ -91,7 +93,22 @@ public class WebCrawlerTest {
         FileIO.writeFile(fileName, stringBuilder.toString());
     }
 
-    public void plainToParseData(PlainData plainData) {
+    @Test
+    public void fileParsingTest() {
+        String path = "./src/main/resources/parsingdata/validData.txt";
+        ArrayList<String> fileContext = FileIO.readFile(path);
+
+        fileContext.forEach(line -> log.debug("{}", line));
+        log.debug("----------------");
+
+        fileContext.forEach( context -> {
+            parsingToValidData(context);
+        });
+        dataList.forEach(validData -> log.debug("{}", validData.toString().substring(0, validData.toString().length()-1)));
+
+    }
+
+    private void plainToValidData(PlainData plainData) {
         String[] plainDates = plainData.getDate().split(" ");
         int year = Integer.parseInt(plainDates[0].replaceAll(NOT_NUMBER,""));
         int month = Integer.parseInt(plainDates[1].replaceAll(NOT_NUMBER,""));
@@ -126,6 +143,47 @@ public class WebCrawlerTest {
                 bonusNumber,
                 winners
                 );
+        dataList.add(validData);
+    }
+
+    private void parsingToValidData(String parsingData) {
+        String[] parsingValues = parsingData.split(SEPARATOR_VALID_DATA);
+
+        int round = Integer.parseInt(parsingValues[0]);
+
+        String[] dateValues = parsingValues[1].split("-");
+        int year = Integer.parseInt(dateValues[0]);
+        int month = Integer.parseInt(dateValues[1]);
+        int day = Integer.parseInt(dateValues[2]);
+        LocalDate date = LocalDate.of(year, month, day);
+
+        int[] numbers = new int[6];
+        String[] plainNumbers = parsingValues[2].substring(1, parsingValues[2].length()-1).split(", ");
+        for(int idx = 0; idx < 6; idx++) {
+            numbers[idx] = Integer.parseInt(plainNumbers[idx]);
+        }
+
+        int bonusNumber = Integer.parseInt(parsingValues[3]);
+
+        Winner[] winners = new Winner[5];
+        String[] parsingWinners = parsingValues[4].substring(1, parsingValues[4].length()-1).split(", ");
+        for(int idx = 0; idx < parsingWinners.length; idx++) {
+            String[] parsingWinner = parsingWinners[idx].split(SEPARATOR_WINNER);
+            int ranking = Integer.parseInt(parsingWinner[0]);
+            long totalMoney = Long.parseLong(parsingWinner[1]);
+            long numberOfWinner = Long.parseLong(parsingWinner[2]);
+            long perMoney = Long.parseLong(parsingWinner[3]);
+
+            winners[ranking-1] = new Winner(ranking, totalMoney, numberOfWinner, perMoney);
+        }
+
+        ValidData validData = new ValidData(
+                round,
+                date,
+                numbers,
+                bonusNumber,
+                winners
+        );
         dataList.add(validData);
     }
 

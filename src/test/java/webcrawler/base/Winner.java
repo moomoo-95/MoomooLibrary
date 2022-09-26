@@ -1,6 +1,8 @@
 package webcrawler.base;
 
 public class Winner{
+    public static final String SEPARATOR = "/";
+
     private final int ranking;
     private final long totalMoney;
     private final long numberOfWinner;
@@ -31,11 +33,6 @@ public class Winner{
 
     @Override
     public String toString() {
-        return "Winner{" +
-                "ranking=" + ranking +
-                ", totalMoney=" + totalMoney +
-                " 원, numberOfWinner=" + numberOfWinner +
-                " 명, perMoney=" + perMoney +
-                " 원}";
+        return ranking + SEPARATOR + totalMoney + SEPARATOR + numberOfWinner + SEPARATOR + perMoney;
     }
 }

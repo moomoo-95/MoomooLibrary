@@ -12,9 +12,17 @@ import java.util.ArrayList;
 public class FileTest {
 
     @Test
-    public void FfmpegMergeTest() {
+    public void FileWriteTest() {
         String path = "./src/main/resources/parsingdata/test.txt";
         FileIO.writeFile(path, "안녕하세요gg\n");
+        ArrayList<String> fileContext = FileIO.readFile(path);
+
+        fileContext.forEach(line -> log.debug("{}", line));
+    }
+
+    @Test
+    public void FileReadTest2() {
+        String path = "./src/main/resources/parsingdata/test.txt";
         ArrayList<String> fileContext = FileIO.readFile(path);
 
         fileContext.forEach(line -> log.debug("{}", line));
