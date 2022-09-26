@@ -13,6 +13,8 @@ import webcrawler.base.Winner;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.stream.Collectors;
 
 @Slf4j
 public class WebCrawlerTest {
@@ -25,6 +27,7 @@ public class WebCrawlerTest {
     public static final String SEPARATOR_WINNER = "/";
 
     private ArrayList<ValidData> dataList = new ArrayList<>();
+    private HashMap<Integer, ValidData> dataMap;
 
 
     @Test
@@ -73,15 +76,6 @@ public class WebCrawlerTest {
         }
 
         elements.forEach( element -> plainToValidData(element));
-//
-//        dataList.forEach( validData -> {
-//            log.debug("=============================================");
-//            log.debug("rnd : {}", validData.getRound());
-//            log.debug("dat : {}", validData.getDate());
-//            log.debug("num : {}", validData.getNumbers());
-//            log.debug("bnm : {}", validData.getBonusNumber());
-//            log.debug("wnr : {}", validData.getWinnerList());
-//        });
 
         String fileName = "./src/main/resources/parsingdata/validData.txt";
         StringBuilder stringBuilder = new StringBuilder();
@@ -108,6 +102,9 @@ public class WebCrawlerTest {
 
     }
 
+    /**
+     * 데이터 가공
+     */
     private void plainToValidData(PlainData plainData) {
         String[] plainDates = plainData.getDate().split(" ");
         int year = Integer.parseInt(plainDates[0].replaceAll(NOT_NUMBER,""));
@@ -146,6 +143,9 @@ public class WebCrawlerTest {
         dataList.add(validData);
     }
 
+    /**
+     * 파싱된 파일을 데이터로 변환
+     */
     private void parsingToValidData(String parsingData) {
         String[] parsingValues = parsingData.split(SEPARATOR_VALID_DATA);
 
@@ -185,6 +185,10 @@ public class WebCrawlerTest {
                 winners
         );
         dataList.add(validData);
+    }
+
+    private void ConvertArrayToMap(){
+//        dataMap = dataList.stream().collect(Collectors.toMap(ValidData::getRound, validData -> validData));
     }
 
 
